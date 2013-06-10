@@ -7,6 +7,7 @@ import urllib
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseNotModified
 from django.core.exceptions import PermissionDenied
 from django.db.models import get_model
+from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.contrib.admin.util import unquote
 from django.views.static import was_modified_since
@@ -37,6 +38,8 @@ def _handle_basic(request, instance, field_name):
     response["Last-Modified"] = http_date(statobj.st_mtime)
     response["Content-Length"] = statobj.st_size
     if field_file.attachment:
+        if field_file.attachment_name:
+            basename = field_file.attachment_name.format(basename=basename, **model_to_dict(instance))
         response['Content-Disposition'] = 'attachment; filename=%s'%basename
     if encoding:
         response["Content-Encoding"] = encoding
@@ -53,6 +56,8 @@ def _handle_nginx(request, instance, field_name):
     response = HttpResponse()
     response['Content-Type'] = mimetype
     if field_file.attachment:
+        if field_file.attachment_name:
+            basename = field_file.attachment_name.format(basename=basename, **model_to_dict(instance))
         response['Content-Disposition'] = 'attachment; filename=%s'%basename
     response["X-Accel-Redirect"] = "/%s"%unicode(field_file)
     response['Content-Length'] = statobj.st_size
@@ -67,6 +72,8 @@ def _handle_xsendfile(request, instance, field_name):
     response = HttpResponse()
     response['Content-Type'] = mimetype
     if field_file.attachment:
+        if field_file.attachment_name:
+            basename = field_file.attachment_name.format(basename=basename, **model_to_dict(instance))
         response['Content-Disposition'] = 'attachment; filename=%s'%basename
     response["X-Sendfile"] = field_file.path
     response['Content-Length'] = statobj.st_size

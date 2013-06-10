@@ -37,9 +37,14 @@ This would check if the user requesting the file is the same user referenced in 
 serve the file if it's true, otherwise it will throw ``PermissionDenied``.
 ``condition`` should return ``True`` if the ``request`` user should be able to download the file and ``False`` otherwise.
 
-Another optional parameter is ``attachment``. It allows you to control wether the ``content-disposition`` header is sent or not.
-By default it is ``True``, meaning the user will always be prompted to download the file by the browser.
+Another optional parameter is ``attachment``. It allows you to control wether the ``content-disposition`` header is sent or not. By default it is ``True``, meaning the user will always be prompted to download the file by the browser. You may also specify a format string for the ``content-disposition`` ``filename`` value using |str.format() syntax|_. You will have access to the file's base filename (``basename``) and a |model_to_dict representation|_ of the file field's model instance as keyword arguments. Here is an example::
 
+    attachment_name='{id}_{basename}'
+
+.. |str.format() syntax| replace:: ``str.format()`` syntax
+.. _str.format() syntax: http://docs.python.org/2/library/string.html#formatstrings
+.. |model_to_dict representation| replace:: ``model_to_dict`` representation
+.. _model_to_dict representation: http://timsaylor.com/index.php/2012/05/21/convert-django-model-instances-to-dictionaries/
 
 Monitoring Access to Static Files
 ------------------------------------------

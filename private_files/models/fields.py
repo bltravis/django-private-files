@@ -36,7 +36,8 @@ def is_user_authenticated(request, instance):
 class PrivateFileField(FileField):
     attr_class = PrivateFieldFile
     
-    def __init__(self, verbose_name=None, name=None, upload_to='', storage=None, condition = is_user_authenticated, attachment = True, **kwargs):
+    def __init__(self, verbose_name=None, name=None, upload_to='', storage=None, condition = is_user_authenticated, attachment = True, attachment_name='', **kwargs):
         super(PrivateFileField, self).__init__(verbose_name, name, upload_to, storage, **kwargs)
         self.condition = condition
         self.attachment = attachment
+        self.attachment_name = attachment_name
